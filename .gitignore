@@ -1,0 +1,2 @@
+#ignore __pycahe__ files
+*.pyc
