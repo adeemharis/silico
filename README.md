@@ -1,4 +1,4 @@
-# Chest X-Ray Detection Project
+# Lung Disease Detection using Chest X-Ray Images
 
 ## Dataset
 
@@ -19,12 +19,17 @@ The dataset consists of two main folders:
 2. **Prepare the Data:**
    - Create a directory named `Data` in the current directory if it does not already exist.
    - Move the extracted folders `Normal` and `Tuberculosis` into `Data/TB_Chest_Radiography_Database/`.
+   - Split the Data in `Normal` and `Tuberculosis`  into Test and Train Folders at `Data/TB_Chest_Radiography_Database/Train/` and `Data/TB_Chest_Radiography_Database/Test/` respectively.
    - The final directory structure should look like this:
      ```
      Data/
      └── TB_Chest_Radiography_Database/
-         ├── Normal/
-         └── Tuberculosis/
+         ├── Train/
+         |     ├── Normal/
+         |     └── Tuberculosis/
+         └── Test/
+               ├── Normal/
+               └── Tuberculosis/
      ```
 
 3. **Save Metadata and Readme:**

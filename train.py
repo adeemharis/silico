@@ -5,6 +5,11 @@ from dataloader import getDataloader
 from model import getModel
 from utils import save_model, plot_metrics, ensure_dir
 
+# Check if GPU is available
+#device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device  = 'cpu'
+print(f'Using device: {device}')
+
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs=25):
     train_loss = []
     val_loss = []
@@ -14,6 +19,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
         model.train()
         running_loss = 0.0
         for inputs, labels in train_loader:
+            inputs, labels = inputs.to(device), labels.to(device)  # Move data to GPU
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = criterion(outputs, labels)
@@ -31,6 +37,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
         total = 0
         with torch.no_grad():
             for inputs, labels in val_loader:
+                inputs, labels = inputs.to(device), labels.to(device)  # Move data to GPU
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
                 val_running_loss += loss.item() * inputs.size(0)
@@ -58,11 +65,13 @@ def main():
     learning_rate = 0.001
 
     model = getModel()
-    train_loader, val_loader, _ = getDataloader()
+    train_loader, val_loader = getDataloader()
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     
+    model.to(device)
+
     train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs=num_epochs)
 
 if __name__ == '__main__':

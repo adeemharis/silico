@@ -1,2 +1,4 @@
 #ignore __pycahe__ files
 *.pyc
+#ignore saved models
+*.pth

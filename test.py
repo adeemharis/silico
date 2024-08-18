@@ -1,5 +1,5 @@
 import torch
-from dataloader import getDataloader
+from dataloader import getTestDataloader
 from model import getModel
 from sklearn.metrics import confusion_matrix, classification_report
 from utils import load_model
@@ -43,7 +43,7 @@ def main():
     model = getModel()
     model = load_model(model, model_path)
 
-    _, _, test_loader = getDataloader()
+    test_loader = getTestDataloader()
 
     criterion = torch.nn.CrossEntropyLoss()
 
