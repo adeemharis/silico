@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 from dataloader import getTestDataloader
 from model import getModel
 from sklearn.metrics import confusion_matrix, classification_report
@@ -18,9 +19,13 @@ def test_model(model, test_loader, criterion):
             loss = criterion(outputs, labels)
             test_loss += loss.item() * inputs.size(0)
 
-            _, predicted = torch.max(outputs, 1)
-            total += labels.size(0)
+            predicted = (torch.sigmoid(outputs) > 0.5).float()
             correct += (predicted == labels).sum().item()
+            total += labels.size(0) * labels.size(1)  # total number of labels
+
+            # _, predicted = torch.max(outputs, 1)
+            # total += labels.size(0)
+            # correct += (predicted == labels).sum().item()
 
             all_labels.extend(labels.cpu().numpy())
             all_preds.extend(predicted.cpu().numpy())
@@ -38,14 +43,14 @@ def test_model(model, test_loader, criterion):
 
 def main():
     batch_size = 32
-    model_path = 'models/final_model.pth'  # Replace with your model's path
+    model_path = 'models/resnet_final_model.pth'  # Replace with your model's path
 
-    model = getModel()
+    model = getModel(num_classes=15)
     model = load_model(model, model_path)
 
     test_loader = getTestDataloader()
 
-    criterion = torch.nn.CrossEntropyLoss()
+    criterion = nn.BCEWithLogitsLoss()
 
     test_model(model, test_loader, criterion)
 

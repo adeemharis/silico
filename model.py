@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models as models
 
 class SimpleCNN(nn.Module):
     def __init__(self):
@@ -19,6 +20,28 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
-def getModel():
-    model = SimpleCNN()
+class MultilabelResNet(nn.Module):
+    def __init__(self, num_classes):
+        super(MultilabelResNet, self).__init__()
+        self.resnet = models.resnet50(weights=None)
+        num_features = self.resnet.fc.in_features
+        self.resnet.fc = nn.Linear(num_features, num_classes)
+
+        # Load the pretrained weights
+        pretrained_dict = torch.load('models/resnet50-0676ba61.pth')
+        model_dict = self.resnet.state_dict()
+        # state_dict = torch.load('models/resnet50-0676ba61.pth')
+        # self.resnet.load_state_dict(state_dict)
+
+        # Filter out the weights that don't match
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict and v.size() == model_dict[k].size()}
+        model_dict.update(pretrained_dict)
+        self.resnet.load_state_dict(model_dict)
+    
+    def forward(self, x):
+        return self.resnet(x)
+
+def getModel(num_classes):
+    #model = SimpleCNN()
+    model = MultilabelResNet(num_classes=num_classes)
     return model

@@ -66,8 +66,10 @@ def get_mean_std(loader):
 
     return mean, std
 
-def plot_image(image):
+def plot_image(image, title=None):
     image = image.numpy()
     image = image.transpose(1,2,0)
-    plt.imshow(image)
+    plt.imshow(image, cmap='gray')
+    if title is not None :
+        plt.title(title)
     plt.show()
